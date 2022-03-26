@@ -54,6 +54,6 @@ if __name__ == '__main__':
     
         env = Environment(loader=FileSystemLoader('.'))
         template = env.get_template('template.html')
-        with open('paipu.html', 'w', encoding='utf-8') as html:
+        with open('index.html', 'w', encoding='utf-8') as html:
             html.write(template.render(data=data, players=players))
-            webbrowser.open_new_tab("paipu.html")
+            webbrowser.open_new_tab('index.html')
