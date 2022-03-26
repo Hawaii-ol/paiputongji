@@ -1,0 +1,60 @@
+.title,
+.paipu,
+.summary {
+    margin: 0% 10%;
+}
+
+.foot {
+    margin-bottom: 50px;
+}
+
+#paipu tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 300px;
+    width: calc(100% + 1em);
+    display: block;
+}
+
+#paipu tr {
+    table-layout: fixed;
+    display: table;
+    width: 100%;
+}
+
+.title h1 {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04aa6d;
+    color: white;
+}
+
+span.score {
+    float: right;
+    color: #2991ce;
+}
+
+span.score-hakoshita {
+    float: right;
+    color: #f03333;
+}

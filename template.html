@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牌谱统计</title>
+    <link rel="stylesheet" href="paipu.css" />
+</head>
+<body>
+    <div class="title">
+        <h1>牌谱统计</h1>
+    </div>
+    <div class="paipu">
+        <hr/>
+        <div><h2>牌谱</h2></div>
+        <div>
+            <table id="paipu">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>玩家一</th>
+                        <th>玩家二</th>
+                        <th>玩家三</th>
+                        <th>玩家四</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paipu in data %}
+                        <tr>
+                            <td><span class="time">{{ paipu['time'] }}</span></td>
+                            {% for name, score in paipu['score'].items() %}
+                                <td><span>{{ name }}</span>
+                                {% if score < 0 %}
+                                    <span class="score-hakoshita">
+                                {% else %}
+                                    <span class=score>
+                                {% endif %}
+                                {{ score }}<span></span></td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="summary">
+        <hr/>
+        <div><h2>统计</h2></div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>玩家</th>
+                        <th>总场次</th>
+                        <th>总得失点</th>
+                        <th>一位率</th>
+                        <th>二位率</th>
+                        <th>三位率</th>
+                        <th>四位率</th>
+                        <th>被飞次数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players.values() %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.games }}</td>
+                            <td>{{ player.accum }}</td>
+                            <td>{{ '%.2f%%' % (player.juni_ritsu(0) * 100) }}</td>
+                            <td>{{ '%.2f%%' % (player.juni_ritsu(1) * 100) }}</td>
+                            <td>{{ '%.2f%%' % (player.juni_ritsu(2) * 100) }}</td>
+                            <td>{{ '%.2f%%' % (player.juni_ritsu(3) * 100) }}</td>
+                            <td>{{ player.hakoshita }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="foot"></div>
+</body>
+</html>
