@@ -4,6 +4,33 @@
     margin: 0% 10%;
 }
 
+.date-selector {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.date-selector button {
+    background-color: #04aa6d;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 8px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.date-selector button:hover {
+    background-color:#12de93
+    
+}
+
+.date-selector span {
+    margin-right: 20px;
+}
+
 .foot {
     margin-bottom: 50px;
 }

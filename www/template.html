@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>牌谱统计</title>
-    <link rel="stylesheet" href="paipu.css" />
+    <link rel="stylesheet" href="www/paipu.css" />
 </head>
 <body>
     <div class="title">
@@ -14,6 +14,11 @@
     <div class="paipu">
         <hr/>
         <div><h2>牌谱</h2></div>
+        <div class="date-selector">
+            <span>开始日期 <input id="startdate" type="date"/></span>
+            <span>结束日期 <input id="enddate" type="date"></span>
+            <button type="button" id="date-submit">确定</button>
+        </div>
         <div>
             <table id="paipu">
                 <thead>
@@ -32,11 +37,11 @@
                             {% for name, score in paipu['score'].items() %}
                                 <td><span>{{ name }}</span>
                                 {% if score < 0 %}
-                                    <span class="score-hakoshita">
+                                    <span class="score-hakoshita">{{ score }}</span>
                                 {% else %}
-                                    <span class=score>
+                                    <span class="score">{{ score }}</span>
                                 {% endif %}
-                                {{ score }}<span></span></td>
+                                </td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
@@ -48,7 +53,7 @@
         <hr/>
         <div><h2>统计</h2></div>
         <div>
-            <table>
+            <table id="summary">
                 <thead>
                     <tr>
                         <th>玩家</th>
@@ -79,5 +84,8 @@
         </div>
     </div>
     <div class="foot"></div>
+    <script type="text/javascript" src="www/moment.js"></script>
+    <script type="text/javascript" src="www/jquery-3.6.1.min.js"></script>
+    <script type="text/javascript" src="www/paipu.js" ></script>
 </body>
 </html>

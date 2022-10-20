@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import webbrowser
 from jinja2 import Environment, FileSystemLoader
@@ -46,11 +47,12 @@ def analyze(paipu_list):
         print("被飞次数：%d" % player.hakoshita)
         print()
 
-    env = Environment(loader=FileSystemLoader('.'))
+    env = Environment(loader=FileSystemLoader('www'))
     template = env.get_template('template.html')
-    with open('index.html', 'w', encoding='utf-8') as html:
+    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'index.html'))
+    with open(output_path, 'w', encoding='utf-8') as html:
         html.write(template.render(data=paipu_list, players=players))
-        webbrowser.open_new_tab('index.html')
+        webbrowser.open_new_tab(output_path)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
