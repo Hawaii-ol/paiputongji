@@ -14,8 +14,9 @@ MAJSOUL_RPCS = {
 def majsoul_record_to_paipu(record):
     meta = record.config.meta
     paipu_json = {}
+    # 暂时只支持统计4名玩家，跳过三麻和AI
     # 友人场应该有room_id字段，且不为0
-    if getattr(meta, 'room_id', 0) > 0:
+    if getattr(meta, 'room_id', 0) > 0 and len(record.accounts) == 4:
         tm = datetime.datetime.fromtimestamp(record.end_time)
         paipu_json['time'] = tm.strftime("%Y-%m-%d %H:%M")
         paipu_json['score'] = {}
