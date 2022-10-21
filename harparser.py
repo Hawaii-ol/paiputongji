@@ -1,10 +1,14 @@
 import base64
 import datetime
 import json
-import tkinter as tk
 import paipu
-from tkinter.filedialog import askopenfilename
-from genprotobuf import generate_metafile, load_protobuf
+import sys
+try:
+    import tkinter as tk
+    from tkinter.filedialog import askopenfilename
+except ImportError:
+    tk = None
+from genprotobuf import load_protobuf
 
 MAJSOUL_RPCS = {
     '心跳包' : 'heatBeat',
@@ -31,13 +35,21 @@ def majsoul_record_to_paipu(record):
     return paipu_json
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    root.withdraw()
-    filename = askopenfilename(filetypes=[("HTTP Archieve Document", "*.har"), ("All files", "*.*")])
+    if len(sys.argv) == 1 and tk:
+        root = tk.Tk()
+        root.withdraw()
+        filename = askopenfilename(filetypes=[("HTTP Archieve Document", "*.har"), ("All files", "*.*")])
+        if not filename:
+            exit(0)
+    elif len(sys.argv) == 2:
+        filename = sys.argv[1]
+    else:
+        print('Usage: harparser.py [HAR file]')
+        exit(0)
 
-    paipu_list = []
-    pb2 = load_protobuf()
     with open(filename, 'r', encoding='utf-8') as har:
+        paipu_list = []
+        pb2 = load_protobuf()
         data = json.load(har)
         for entry in data['log']['entries']:
             wsmsg = entry.get('_webSocketMessages')
@@ -85,7 +97,7 @@ if __name__ == '__main__':
                                 if paipu_json:
                                     paipu_list.append(paipu_json)
                 break
-    if paipu_list:
-        paipu.analyze(paipu_list)
-    else:
-        print('没有找到牌谱列表信息！')
+        if paipu_list:
+            paipu.analyze(paipu_list)
+        else:
+            print('没有找到牌谱列表信息！')
