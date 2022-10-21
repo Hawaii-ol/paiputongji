@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>牌谱统计</title>
-    <link rel="stylesheet" href="www/paipu.css" />
+    <link rel="stylesheet" href="res/paipu.css" />
 </head>
 <body>
     <div class="title">
@@ -17,7 +17,8 @@
         <div class="date-selector">
             <span>开始日期 <input id="startdate" type="date"/></span>
             <span>结束日期 <input id="enddate" type="date"></span>
-            <button type="button" id="date-submit">确定</button>
+            <button type="button" name="submit">确定</button>
+            <button type="button" name="reset">重置</button>
         </div>
         <div>
             <table id="paipu">
@@ -59,6 +60,7 @@
                         <th>玩家</th>
                         <th>总场次</th>
                         <th>总得失点</th>
+                        <th>平均顺位</th>
                         <th>一位率</th>
                         <th>二位率</th>
                         <th>三位率</th>
@@ -72,6 +74,7 @@
                             <td>{{ player.name }}</td>
                             <td>{{ player.games }}</td>
                             <td>{{ player.accum }}</td>
+                            <td>{{ '%.3f' % player.avg_juni() }}</td>
                             <td>{{ '%.2f%%' % (player.juni_ritsu(0) * 100) }}</td>
                             <td>{{ '%.2f%%' % (player.juni_ritsu(1) * 100) }}</td>
                             <td>{{ '%.2f%%' % (player.juni_ritsu(2) * 100) }}</td>
@@ -84,8 +87,8 @@
         </div>
     </div>
     <div class="foot"></div>
-    <script type="text/javascript" src="www/moment.js"></script>
-    <script type="text/javascript" src="www/jquery-3.6.1.min.js"></script>
-    <script type="text/javascript" src="www/paipu.js" ></script>
+    <script type="text/javascript" src="res/moment.js"></script>
+    <script type="text/javascript" src="res/jquery-3.6.1.min.js"></script>
+    <script type="text/javascript" src="res/paipu.js" ></script>
 </body>
 </html>

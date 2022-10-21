@@ -18,6 +18,12 @@ class Player:
         else:
             return self.juni[rank] / sum(self.juni)
 
+    def avg_juni(self):
+        _sum = 0
+        for i in range(4):
+            _sum += (i + 1) * self.juni[i]
+        return _sum / self.games
+
 def analyze(paipu_list):
     players = {}
     for paipu in paipu_list:
@@ -40,6 +46,7 @@ def analyze(paipu_list):
     for player in players.values():
         print('玩家：%s' % player.name)
         print('总得失点：%d' % player.accum)
+        print('平均顺位：%.3f' % player.avg_juni())
         print('一位率: %.2f%%' % (player.juni_ritsu(0) * 100))
         print("二位率: %.2f%%" % (player.juni_ritsu(1) * 100))
         print("三位率: %.2f%%" % (player.juni_ritsu(2) * 100))
@@ -47,9 +54,10 @@ def analyze(paipu_list):
         print("被飞次数：%d" % player.hakoshita)
         print()
 
-    env = Environment(loader=FileSystemLoader('www'))
+    dirname = os.path.dirname(__file__)
+    env = Environment(loader=FileSystemLoader(os.path.join(dirname, 'res')))
     template = env.get_template('template.html')
-    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'index.html'))
+    output_path = os.path.abspath(os.path.join(dirname, 'index.html'))
     with open(output_path, 'w', encoding='utf-8') as html:
         html.write(template.render(data=paipu_list, players=players))
         webbrowser.open_new_tab(output_path)

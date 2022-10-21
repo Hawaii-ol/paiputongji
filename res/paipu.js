@@ -17,6 +17,14 @@ class Player {
         else
             return this.juni[rank] / sum
     }
+
+    avg_juni() {
+        let sum = 0
+        for (let i = 0; i < 4; i++) {
+            sum += (i + 1) * this.juni[i]
+        }
+        return sum / this.gamePlayed
+    }
 }
 
 function renderPaipu() {
@@ -66,6 +74,8 @@ function renderPaipu() {
         $(row).append('<td>' + player.gamePlayed + '</td>')
         // 总得失点
         $(row).append('<td>' + player.accum + '</td>')
+        // 平均顺位
+        $(row).append('<td>' + player.avg_juni().toFixed(3) + '</td>')
         // 一位率~四位率
         for (let i = 0; i < 4; i++) {
             $(row).append('<td>' + (player.juni_litsu(i) * 100).toFixed(2) + '%</td>')
@@ -76,7 +86,7 @@ function renderPaipu() {
     })
 }
 
-$(document).ready(function() {
+$(function() {
     $('table#paipu tbody tr').each(function() {
         const row = {'players': []}
         $(this).children('td').each(function(i, item) {
@@ -89,19 +99,28 @@ $(document).ready(function() {
         })
         paipuArr.push(row)
     })
-})
+        
+    $('.date-selector button[name=submit]').click(function() {
+        let startDate = $('#startdate').val()
+        let endDate = $('#enddate').val()
+        if (startDate && endDate) {
+            startDate = new Date(startDate + 'T00:00')
+            endDate = moment(new Date(endDate + 'T00:00')).add(1, 'days')
+            if (startDate < endDate) {
+                filteredPaipu = paipuArr.filter(paipu => 
+                    paipu['time'] >= startDate && paipu['time'] <= endDate
+                )
+                renderPaipu()
+                return
+            }
+        }
+        alert('请选择有效的开始日期和结束日期！')
+    })
 
-$('.date-selector button').click(function() {
-    let startDate = $('#startdate').val()
-    let endDate = $('#enddate').val()
-    if (startDate && endDate) {
-        startDate = new Date(startDate + 'T00:00')
-        endDate = new Date(endDate + 'T00:00')
-        filteredPaipu = paipuArr.filter(paipu => 
-            paipu['time'] >= startDate && paipu['time'] <= endDate
-        )
-    } else {
+    $('.date-selector button[name=reset]').click(function() {
+        $('#startdate').val('')
+        $('#enddate').val('')
         filteredPaipu = paipuArr
-    }
-    renderPaipu()
+        renderPaipu()
+    })
 })
