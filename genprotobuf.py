@@ -27,6 +27,8 @@ def generate_metafile():
         compiler = os.path.abspath(os.path.join(dirname, 'compiler', 'windows', 'x64', 'bin', 'protoc.exe'))
     elif uname == 'Linux' and machine in ('x86_64', 'x64'):
         compiler = os.path.abspath(os.path.join(dirname, 'compiler', 'linux', 'x64', 'bin', 'protoc'))
+    elif uname == 'Darwin':
+        compiler = os.path.abspath(os.path.join(dirname, 'compiler', 'osx', 'universal', 'bin', 'protoc'))
     else:
         raise RuntimeError('Unable to find a proper compiler for your platform, or your platform cannot be determined.')
     result = subprocess.run([compiler, f'-I={dirname}', f'--python_out={dirname}', liqiproto],
