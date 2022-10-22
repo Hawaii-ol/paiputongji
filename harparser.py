@@ -6,24 +6,43 @@ import sys
 try:
     import tkinter as tk
     from tkinter.filedialog import askopenfilename
-except ImportError:
+except Exception: # tkinter抛出的可能是自定义异常，不是ImportError
     tk = None
 from genprotobuf import load_protobuf
+from google.protobuf.json_format import MessageToJson
 
 MAJSOUL_RPCS = {
     '心跳包' : 'heatBeat',
+    'OAUTH2登录' : 'oauth2Login',
     '获取牌谱列表' : 'fetchGameRecordList',
 }
 
-def majsoul_record_to_paipu(record):
-    meta = record.config.meta
-    paipu_json = {}
-    # 暂时只支持统计4名玩家，跳过三麻和AI
-    # 友人场应该有room_id字段，且不为0
-    if getattr(meta, 'room_id', 0) > 0 and len(record.accounts) == 4:
+def majsoul_record_to_paipu(record, account_id : int = None) -> dict:
+    uuid = record.uuid
+    if account_id:
+        uuid += f'_a{paipu.encrypt_account_id(account_id)}'
+    '''
+    只统计四名人类玩家的友人场牌局，跳过三麻，AI玩家等
+    GameConfig.category 1=友人场 2=段位场
+    跳过修罗之战，血流换三张，瓦西子麻将等活动模式
+    '''
+    rule = record.config.mode.detail_rule
+    if (record.config.category == 1 and
+        len(record.accounts) == 4 and
+        not rule.jiuchao_mode and # 瓦西子麻将
+        not rule.muyu_mode and # 龙之目玉
+        not rule.xuezhandaodi and # 修罗之战
+        not rule.huansanzhang and # 换三张
+        not rule.chuanma and # 川麻血战到底
+        not rule.reveal_discard and # 暗夜之战
+        not rule.field_spell_mode # 幻境传说
+        ):
         tm = datetime.datetime.fromtimestamp(record.end_time)
-        paipu_json['time'] = tm.strftime("%Y-%m-%d %H:%M")
-        paipu_json['score'] = {}
+        paipu_json = {
+            'uuid' : uuid,
+            'time' : tm.strftime("%Y-%m-%d %H:%M"),
+            'score' : {},
+        }
         seats = [None] * 4
         for account in record.accounts:
             seats[account.seat] = account
@@ -32,7 +51,7 @@ def majsoul_record_to_paipu(record):
             score = player.part_point_1
             account = seats[player.seat]
             paipu_json['score'][account.nickname] = score
-    return paipu_json
+        return paipu_json
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 and tk:
@@ -49,6 +68,9 @@ if __name__ == '__main__':
 
     with open(filename, 'r', encoding='utf-8') as har:
         paipu_list = []
+        uuid_set = set()
+        account_id = None
+        nickname = None
         pb2 = load_protobuf()
         data = json.load(har)
         for entry in data['log']['entries']:
@@ -90,14 +112,21 @@ if __name__ == '__main__':
                         response_descriptor = method_descriptor.output_type
                         response = getattr(pb2, response_descriptor.name)()
                         response.ParseFromString(wrapper.data)
-                        # 除了获取牌谱列表外，还有很多功能可供开发
-                        if rpcname == MAJSOUL_RPCS['获取牌谱列表']:
+                        # payload = MessageToJson(response)
+                        # print(rpcname)
+                        # print(payload)
+                        if rpcname == MAJSOUL_RPCS['OAUTH2登录']:
+                            account_id = response.account_id
+                            nickname = response.account.nickname
+                        elif rpcname == MAJSOUL_RPCS['获取牌谱列表']:
                             for record in response.record_list:
-                                paipu_json = majsoul_record_to_paipu(record)
-                                if paipu_json:
+                                paipu_json = majsoul_record_to_paipu(record, account_id)
+                                if paipu_json and paipu_json['uuid'] not in uuid_set:
                                     paipu_list.append(paipu_json)
+                                    uuid_set.add(paipu_json['uuid'])
+                        # TODO 除了获取牌谱列表外，还有很多功能可供开发
                 break
         if paipu_list:
-            paipu.analyze(paipu_list)
+            paipu.analyze(paipu_list, nickname)
         else:
             print('没有找到牌谱列表信息！')

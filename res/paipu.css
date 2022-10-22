@@ -4,6 +4,26 @@
     margin: 0% 10%;
 }
 
+a.time {
+    outline: none;
+    text-decoration: none;
+    padding: 2px 1px 0;
+}
+
+a.time:link {
+    color: #04aa6d;
+}
+
+a.time:focus {
+    border-bottom: 1px solid;
+    background: #BAE498;
+}
+
+a.time:hover {
+    border-bottom: 1px solid;
+    background: #CDFEAA;
+}
+
 .date-selector {
     padding-top: 12px;
     padding-bottom: 12px;

@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="title">
-        <h1>牌谱统计</h1>
+        <h1>{% if nickname %}{{ nickname }} 的{% endif %}牌谱统计</h1>
     </div>
     <div class="paipu">
         <hr/>
@@ -34,7 +34,9 @@
                 <tbody>
                     {% for paipu in data %}
                         <tr>
-                            <td><span class="time">{{ paipu['time'] }}</span></td>
+                            <td><span>
+                                <a class="time" href="{{ url + paipu['uuid'] }}" target="_blank">{{ paipu['time'] }}</a>
+                            </span></td>
                             {% for name, score in paipu['score'].items() %}
                                 <td><span>{{ name }}</span>
                                 {% if score < 0 %}

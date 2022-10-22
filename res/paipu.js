@@ -36,10 +36,9 @@ function renderPaipu() {
         const row = document.createElement('tr')
         for (let i = 0; i < 5; i++) {
             if (i === 0) {
-                const time = paipu['time']
-                $(row).append('<td><span class="time">' +
-                    moment(time).format('YYYY-MM-DD HH:mm') +
-                    '</span></td>')
+                $(row).append(`<td><span><a class="time" href="${paipu['link']}" target="_blank">` +
+                    moment(paipu['time']).format('YYYY-MM-DD HH:mm') +
+                    '</a></span></td>')
             } else {
                 const [name, score] = paipu['players'][i - 1]
                 const td = document.createElement('td')
@@ -90,12 +89,15 @@ $(function() {
     $('table#paipu tbody tr').each(function() {
         const row = {'players': []}
         $(this).children('td').each(function(i, item) {
-            if (i === 0)
-                row['time'] = new Date(item.innerText)
-            else
+            if (i === 0){
+                const a = $(item).find('a:first')
+                row['time'] = new Date(a.text())
+                row['link'] = a.attr('href')
+            } else {
                 row['players'].push(Array.from($(item).children('span'),
-                    (e, i) => i == 1 ? parseInt(e.innerText) : e.innerText)
-                )
+                    (e, i) => i == 1 ? parseInt(e.innerText) : e.innerText))
+            }
+
         })
         paipuArr.push(row)
     })
