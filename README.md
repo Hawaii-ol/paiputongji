@@ -1,3 +1,5 @@
+**(本项目已用go重写，且支持在线查询，请移步[paiputongji-go](https://github.com/Hawaii-ol/paiputongji-go))**
+
 ### 牌谱统计
 ***
 友人场牌谱统计，揪出隐藏带恶人
